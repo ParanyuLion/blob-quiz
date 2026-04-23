@@ -24,6 +24,14 @@ const RARITY_BADGE_BG: Record<string, string> = {
   Mythic: 'bg-gradient-to-r from-pink-500 to-purple-600 text-white border-transparent',
 };
 
+const RARITY_STARS: Record<string, number> = {
+  Common: 1,
+  Rare: 2,
+  'Super Rare': 3,
+  Legendary: 4,
+  Mythic: 5,
+};
+
 export default function ResultCard({ result, onRetry }: ResultCardProps) {
   const isLegendaryPlus = result.rarity === 'Legendary' || result.rarity === 'Mythic';
   const isMythic = result.rarity === 'Mythic';
@@ -78,7 +86,7 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
             transition={{ delay: 0.3, type: 'spring', stiffness: 260 }}
           >
             <span
-              className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-display font-bold border-2 tracking-wider uppercase ${RARITY_BADGE_BG[result.rarity]}`}
+              className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-display font-bold border-2 tracking-wider ${RARITY_BADGE_BG[result.rarity]}`}
               style={
                 isMythic
                   ? {
@@ -90,9 +98,7 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
                   : undefined
               }
             >
-              {result.rarity === 'Legendary' && '⭐ '}
-              {isMythic && '🌈 '}
-              {result.rarity}
+              {'★'.repeat(RARITY_STARS[result.rarity])}
             </span>
           </motion.div>
 
@@ -174,27 +180,21 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
             </div>
           </div>
 
-          {/* Hexagon rarity indicator */}
+          {/* Star rarity indicator */}
           <div className="flex items-center justify-center gap-1 mt-1">
-            {(['Common', 'Rare', 'Super Rare', 'Legendary', 'Mythic'] as const).map((r) => {
-              const active =
-                ['Common', 'Rare', 'Super Rare', 'Legendary', 'Mythic'].indexOf(result.rarity) >=
-                ['Common', 'Rare', 'Super Rare', 'Legendary', 'Mythic'].indexOf(r);
+            {Array.from({ length: 5 }, (_, i) => {
+              const filled = i < RARITY_STARS[result.rarity];
               return (
-                <motion.div
-                  key={r}
+                <motion.span
+                  key={i}
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{ delay: 0.5 + ['Common', 'Rare', 'Super Rare', 'Legendary', 'Mythic'].indexOf(r) * 0.08 }}
-                  className={`w-4 h-4 rounded-sm rotate-45 transition-all ${
-                    active ? 'opacity-100' : 'opacity-20'
-                  }`}
-                  style={{
-                    background: active
-                      ? `linear-gradient(135deg, ${result.gradientFrom}, ${result.gradientTo})`
-                      : '#E5E7EB',
-                  }}
-                />
+                  transition={{ delay: 0.5 + i * 0.08 }}
+                  className={`text-2xl transition-all select-none ${filled ? 'opacity-100' : 'opacity-15'}`}
+                  style={{ color: filled ? result.badgeColor : '#D1D5DB' }}
+                >
+                  ★
+                </motion.span>
               );
             })}
           </div>

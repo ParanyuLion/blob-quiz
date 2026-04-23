@@ -142,18 +142,18 @@ export default function HomePage() {
               className="flex flex-wrap gap-2 justify-center"
             >
               {[
-                { label: 'Common', color: '#9CA3AF' },
-                { label: 'Rare', color: '#3B82F6' },
-                { label: 'Super Rare', color: '#A855F7' },
-                { label: 'Legendary', color: '#F59E0B' },
-                { label: 'Mythic ✨', color: '#FF6B9D' },
-              ].map(({ label, color }) => (
+                { label: 'Common', stars: 1, color: '#9CA3AF' },
+                { label: 'Rare', stars: 2, color: '#3B82F6' },
+                { label: 'Super Rare', stars: 3, color: '#A855F7' },
+                { label: 'Legendary', stars: 4, color: '#F59E0B' },
+                { label: 'Mythic', stars: 5, color: '#FF6B9D' },
+              ].map(({ label, stars, color }) => (
                 <span
                   key={label}
                   className="px-3 py-1 rounded-full text-xs font-body font-bold text-white shadow-sm"
                   style={{ backgroundColor: color }}
                 >
-                  {label}
+                  {'★'.repeat(stars)} {label}
                 </span>
               ))}
             </motion.div>
