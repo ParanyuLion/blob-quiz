@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { BlobResult } from '../types';
+import BlobFace from './BlobFace';
 
 interface ResultCardProps {
   result: BlobResult;
@@ -118,12 +119,15 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
               repeat: Infinity,
               ease: 'easeInOut',
             }}
-            className="w-28 h-28 flex items-center justify-center shadow-xl"
+            className="relative w-28 h-28 shadow-xl"
             style={{
               background: `linear-gradient(135deg, ${result.gradientFrom}, ${result.gradientTo})`,
             }}
           >
-            <span className="text-5xl select-none">{result.emoji}</span>
+            <BlobFace personality={result.id} />
+            <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-2xl select-none z-10">
+              {result.emoji}
+            </span>
           </motion.div>
 
           {/* Legendary+ sparkles */}

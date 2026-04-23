@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Question } from '../types';
 import ProgressBar from './ProgressBar';
 import AdBanner from './AdBanner';
+import BlobFace from './BlobFace';
 
 interface QuestionCardProps {
   question: Question;
@@ -149,6 +150,23 @@ export default function QuestionCard({
                   </motion.div>
                 )}
               </AnimatePresence>
+            </div>
+
+            {/* Blob companion */}
+            <div className="absolute bottom-4 right-4 w-12 h-12">
+              <motion.div
+                className="absolute inset-0"
+                animate={{
+                  borderRadius: [
+                    '60% 40% 30% 70% / 60% 30% 70% 40%',
+                    '40% 60% 70% 30% / 40% 50% 60% 50%',
+                    '60% 40% 30% 70% / 60% 30% 70% 40%',
+                  ],
+                }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ background: 'rgba(255,255,255,0.32)' }}
+              />
+              <BlobFace personality="generic" />
             </div>
 
             {/* Countdown strip at bottom */}
