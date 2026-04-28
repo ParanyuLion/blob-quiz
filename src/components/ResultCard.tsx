@@ -205,8 +205,32 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
           )}
 
           <div className="text-center mt-1">
-            <h1 className="font-display text-2xl text-gray-800 leading-tight">{result.name}</h1>
-            <p className="font-body text-sm text-gray-500 mt-1">{result.subtitle}</p>
+            <h1 className="font-display text-2xl text-gray-800 leading-tight">
+              {['nameReveal', 'traitsReveal', 'done'].includes(revealPhase)
+                ? result.name.split('').map((char, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2, ease: 'easeOut', delay: i * 0.04 }}
+                      className="inline-block"
+                    >
+                      {char === ' ' ? ' ' : char}
+                    </motion.span>
+                  ))
+                : <span className="opacity-0 select-none">{result.name}</span>
+              }
+            </h1>
+            <motion.p
+              className="font-body text-sm text-gray-500 mt-1"
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: ['nameReveal', 'traitsReveal', 'done'].includes(revealPhase) ? 1 : 0,
+              }}
+              transition={{ duration: 0.3, delay: result.name.length * 0.04 }}
+            >
+              {result.subtitle}
+            </motion.p>
           </div>
         </div>
 
