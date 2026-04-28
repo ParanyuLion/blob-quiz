@@ -213,7 +213,14 @@ export default function QuestionCard({
               initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.05 }}
-              className="px-5 py-5 bg-white rounded-3xl shadow-lg border border-pink-50"
+              className="px-5 py-5 rounded-3xl shadow-lg"
+              style={{
+                background: 'rgba(255,255,255,0.75)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1.5px solid rgba(255,255,255,0.6)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9)',
+              }}
             >
               <h2 className="font-display text-xl text-gray-700 leading-snug mb-5">
                 {question.question}
@@ -229,7 +236,14 @@ export default function QuestionCard({
                     whileHover={{ scale: 1.02, x: 4 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => onAnswer(option.scores)}
-                    className="group w-full text-left px-5 py-4 rounded-2xl bg-gradient-to-r from-pink-50 to-rose-50 border-2 border-pink-100 hover:border-pink-300 hover:from-pink-100 hover:to-rose-100 transition-all duration-200 cursor-pointer"
+                    className="group w-full text-left px-5 py-4 rounded-2xl transition-all duration-200 cursor-pointer"
+                    style={{
+                      background: 'rgba(255,255,255,0.55)',
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)',
+                      border: '1.5px solid rgba(255,182,210,0.4)',
+                      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), 0 2px 8px rgba(0,0,0,0.05)',
+                    }}
                   >
                     <span className="font-body text-sm text-gray-600 group-hover:text-gray-800 leading-relaxed transition-colors">
                       {option.text}

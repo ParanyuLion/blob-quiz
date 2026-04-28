@@ -207,9 +207,13 @@ export default function HomePage() {
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => setPhase("quiz")}
-              className="w-full max-w-xs py-5 rounded-2xl font-display text-xl text-white shadow-xl"
+              className="w-full max-w-xs py-5 rounded-2xl font-display text-xl text-white transition-all"
               style={{
-                background: "linear-gradient(135deg, #FF85A2 0%, #C7B8EA 100%)",
+                background: 'linear-gradient(135deg, rgba(255,133,162,0.72) 0%, rgba(199,184,234,0.72) 100%)',
+                backdropFilter: 'blur(14px)',
+                WebkitBackdropFilter: 'blur(14px)',
+                border: '1.5px solid rgba(255,255,255,0.55)',
+                boxShadow: '0 8px 32px rgba(255,133,162,0.35), inset 0 1px 0 rgba(255,255,255,0.5)',
               }}
             >
               เริ่มทดสอบเลย! 🤩

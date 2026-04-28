@@ -209,9 +209,13 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={handleShare}
-              className="w-full py-4 rounded-2xl font-display text-base text-white shadow-lg transition-all"
+              className="w-full py-4 rounded-2xl font-display text-base text-white transition-all"
               style={{
-                background: `linear-gradient(135deg, ${result.gradientFrom}, ${result.gradientTo})`,
+                background: `linear-gradient(135deg, ${result.gradientFrom}bb, ${result.gradientTo}bb)`,
+                backdropFilter: 'blur(14px)',
+                WebkitBackdropFilter: 'blur(14px)',
+                border: '1.5px solid rgba(255,255,255,0.5)',
+                boxShadow: `0 8px 24px ${result.gradientTo}55, inset 0 1px 0 rgba(255,255,255,0.45)`,
               }}
             >
               แชร์ผลลัพธ์นี้ 🎉
@@ -221,7 +225,14 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
               onClick={onRetry}
-              className="w-full py-3.5 rounded-2xl font-display text-base text-pink-400 border-2 border-pink-200 bg-white hover:bg-pink-50 transition-all"
+              className="w-full py-3.5 rounded-2xl font-display text-base text-pink-500 transition-all"
+              style={{
+                background: 'rgba(255,255,255,0.45)',
+                backdropFilter: 'blur(14px)',
+                WebkitBackdropFilter: 'blur(14px)',
+                border: '1.5px solid rgba(255,182,210,0.55)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 2px 12px rgba(255,100,157,0.12)',
+              }}
             >
               ทดสอบใหม่อีกรอบ 🔁
             </motion.button>
