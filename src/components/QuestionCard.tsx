@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Question } from '../types';
-import ProgressBar from './ProgressBar';
-import AdBanner from './AdBanner';
-import BlobFace from './BlobFace';
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Question } from "../types";
+import ProgressBar from "./ProgressBar";
+import AdBanner from "./AdBanner";
+import BlobFace from "./BlobFace";
 
 interface QuestionCardProps {
   question: Question;
@@ -17,16 +17,16 @@ interface QuestionCardProps {
 const STORY_DURATION = 3000;
 
 const SCENE_PALETTES = [
-  { from: '#FFB3C6', to: '#FDEEA3', icon: '🌅' },
-  { from: '#B5EAD7', to: '#C7F2E8', icon: '🌿' },
-  { from: '#C7B8EA', to: '#E8D5F5', icon: '✨' },
-  { from: '#FFD166', to: '#FFB3C6', icon: '🌸' },
-  { from: '#B5EAD7', to: '#FDEEA3', icon: '🍃' },
+  { from: "#FFB3C6", to: "#FDEEA3", icon: "🌅" },
+  { from: "#B5EAD7", to: "#C7F2E8", icon: "🌿" },
+  { from: "#C7B8EA", to: "#E8D5F5", icon: "✨" },
+  { from: "#FFD166", to: "#FFB3C6", icon: "🌸" },
+  { from: "#B5EAD7", to: "#FDEEA3", icon: "🍃" },
 ];
 
 const wordVariants = {
-  hidden: { opacity: 0, y: 8, filter: 'blur(4px)' },
-  visible: { opacity: 1, y: 0, filter: 'blur(0px)' },
+  hidden: { opacity: 0, y: 8, filter: "blur(4px)" },
+  visible: { opacity: 1, y: 0, filter: "blur(0px)" },
 };
 
 export default function QuestionCard({
@@ -35,18 +35,18 @@ export default function QuestionCard({
   totalQuestions,
   onAnswer,
 }: QuestionCardProps) {
-  const [phase, setPhase] = useState<'story' | 'question'>('story');
+  const [phase, setPhase] = useState<"story" | "question">("story");
   const [showTap, setShowTap] = useState(false);
 
   const palette = SCENE_PALETTES[questionIndex % SCENE_PALETTES.length];
 
   // Reset to story on each new question
   useEffect(() => {
-    setPhase('story');
+    setPhase("story");
     setShowTap(false);
 
     const tapTimer = setTimeout(() => setShowTap(true), 1400);
-    const autoTimer = setTimeout(() => setPhase('question'), STORY_DURATION);
+    const autoTimer = setTimeout(() => setPhase("question"), STORY_DURATION);
 
     return () => {
       clearTimeout(tapTimer);
@@ -55,19 +55,22 @@ export default function QuestionCard({
   }, [question.id]);
 
   const handleStoryTap = useCallback(() => {
-    if (phase === 'story') setPhase('question');
+    if (phase === "story") setPhase("question");
   }, [phase]);
 
   // Strip leading emoji/asterisk markers from introStory and split to words
   const storyWords = useMemo(() => {
-    const clean = question.introStory.replace(/^\S+\s*\*?\s*/, '').replace(/\*$/, '').trim();
-    return clean.split(' ');
+    const clean = question.introStory
+      .replace(/^\S+\s*\*?\s*/, "")
+      .replace(/\*$/, "")
+      .trim();
+    return clean.split(" ");
   }, [question.introStory]);
 
   // Extract leading emoji from introStory
   const storyEmoji = useMemo(() => {
     const match = question.introStory.match(/^(\S+)/);
-    return match ? match[1] : '🫧';
+    return match ? match[1] : "🤩";
   }, [question.introStory]);
 
   return (
@@ -77,7 +80,7 @@ export default function QuestionCard({
 
       <AnimatePresence mode="wait">
         {/* ── STORY PHASE ── */}
-        {phase === 'story' && (
+        {phase === "story" && (
           <motion.div
             key="story"
             initial={{ opacity: 0, scale: 0.94, y: 20 }}
@@ -96,13 +99,13 @@ export default function QuestionCard({
               className="absolute inset-0 opacity-20 pointer-events-none"
               animate={{
                 borderRadius: [
-                  '60% 40% 30% 70% / 60% 30% 70% 40%',
-                  '40% 60% 70% 30% / 40% 50% 60% 50%',
-                  '60% 40% 30% 70% / 60% 30% 70% 40%',
+                  "60% 40% 30% 70% / 60% 30% 70% 40%",
+                  "40% 60% 70% 30% / 40% 50% 60% 50%",
+                  "60% 40% 30% 70% / 60% 30% 70% 40%",
                 ],
               }}
-              style={{ background: 'white' }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ background: "white" }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             />
 
             <div className="relative z-10 flex flex-col items-center justify-center gap-5 px-6 py-10 text-center">
@@ -110,7 +113,12 @@ export default function QuestionCard({
               <motion.span
                 initial={{ scale: 0, rotate: -20 }}
                 animate={{ scale: 1, rotate: 0 }}
-                transition={{ type: 'spring', stiffness: 260, damping: 18, delay: 0.1 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 18,
+                  delay: 0.1,
+                }}
                 className="text-5xl drop-shadow-sm"
               >
                 {storyEmoji}
@@ -127,7 +135,7 @@ export default function QuestionCard({
                   <motion.span
                     key={i}
                     variants={wordVariants}
-                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
                     className="inline-block mr-1"
                   >
                     {word}
@@ -142,10 +150,16 @@ export default function QuestionCard({
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: [0.5, 1, 0.5] }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                    transition={{
+                      duration: 1.4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                     className="flex items-center gap-1.5 mt-1"
                   >
-                    <span className="font-body text-xs text-gray-500">แตะเพื่อดำเนินต่อ</span>
+                    <span className="font-body text-xs text-gray-500">
+                      แตะเพื่อดำเนินต่อ
+                    </span>
                     <span className="text-xs">👆</span>
                   </motion.div>
                 )}
@@ -158,13 +172,17 @@ export default function QuestionCard({
                 className="absolute inset-0"
                 animate={{
                   borderRadius: [
-                    '60% 40% 30% 70% / 60% 30% 70% 40%',
-                    '40% 60% 70% 30% / 40% 50% 60% 50%',
-                    '60% 40% 30% 70% / 60% 30% 70% 40%',
+                    "60% 40% 30% 70% / 60% 30% 70% 40%",
+                    "40% 60% 70% 30% / 40% 50% 60% 50%",
+                    "60% 40% 30% 70% / 60% 30% 70% 40%",
                   ],
                 }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                style={{ background: 'rgba(255,255,255,0.32)' }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                style={{ background: "rgba(255,255,255,0.32)" }}
               />
               <BlobFace personality="generic" />
             </div>
@@ -172,16 +190,16 @@ export default function QuestionCard({
             {/* Countdown strip at bottom */}
             <motion.div
               className="absolute bottom-0 left-0 h-1 rounded-b-3xl"
-              style={{ background: 'rgba(255,255,255,0.6)' }}
-              initial={{ width: '100%' }}
-              animate={{ width: '0%' }}
-              transition={{ duration: STORY_DURATION / 1000, ease: 'linear' }}
+              style={{ background: "rgba(255,255,255,0.6)" }}
+              initial={{ width: "100%" }}
+              animate={{ width: "0%" }}
+              transition={{ duration: STORY_DURATION / 1000, ease: "linear" }}
             />
           </motion.div>
         )}
 
         {/* ── QUESTION PHASE ── */}
-        {phase === 'question' && (
+        {phase === "question" && (
           <motion.div
             key="question"
             initial={{ opacity: 0, x: 60 }}

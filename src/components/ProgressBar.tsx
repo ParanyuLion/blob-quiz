@@ -14,7 +14,7 @@ export default function ProgressBar({ current, total }: ProgressBarProps) {
         <span className="font-display text-sm text-pink-400 tracking-wide">
           ข้อ {current} / {total}
         </span>
-        <span className="font-body text-xs text-gray-400 font-semibold">{pct}%</span>
+        <span className="font-body text-xs text-gray-500 font-semibold">{pct}%</span>
       </div>
 
       <div className="relative h-4 bg-pink-100 rounded-full overflow-hidden shadow-inner">

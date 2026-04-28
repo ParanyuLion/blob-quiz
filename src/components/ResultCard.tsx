@@ -169,7 +169,7 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
 
           {/* Traits */}
           <div>
-            <p className="font-display text-sm text-gray-400 mb-3 text-center tracking-wider uppercase">
+            <p className="font-display text-sm text-gray-500 mb-3 text-center tracking-wider uppercase">
               ลักษณะประจำก้อน
             </p>
             <div className="flex flex-wrap gap-2 justify-center">

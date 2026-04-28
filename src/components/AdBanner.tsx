@@ -25,7 +25,7 @@ export default function AdBanner({ className = '' }: AdBannerProps) {
        *  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
        *
        * ──────────────────────────────────────────────────────────────────────── */}
-      <p className="text-xs text-gray-300 font-body select-none">โฆษณา</p>
+      <p className="text-xs text-gray-400 font-body select-none">โฆษณา</p>
     </div>
   );
 }
