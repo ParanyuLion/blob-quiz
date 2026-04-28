@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { BlobResult } from '../types';
 import BlobFace from './BlobFace';
@@ -33,9 +34,22 @@ const RARITY_STARS: Record<string, number> = {
   Mythic: 5,
 };
 
+type RevealPhase = 'silhouette' | 'rarityFlash' | 'blobReveal' | 'nameReveal' | 'traitsReveal' | 'done';
+
 export default function ResultCard({ result, onRetry }: ResultCardProps) {
   const isLegendaryPlus = result.rarity === 'Legendary' || result.rarity === 'Mythic';
   const isMythic = result.rarity === 'Mythic';
+
+  const [revealPhase, setRevealPhase] = useState<RevealPhase>('silhouette');
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setRevealPhase('rarityFlash'),  600);
+    const t2 = setTimeout(() => setRevealPhase('blobReveal'),   1100);
+    const t3 = setTimeout(() => setRevealPhase('nameReveal'),   1500);
+    const t4 = setTimeout(() => setRevealPhase('traitsReveal'), 1900);
+    const t5 = setTimeout(() => setRevealPhase('done'),         2400);
+    return () => [t1, t2, t3, t4, t5].forEach(clearTimeout);
+  }, []);
 
   const handleShare = () => {
     const url = typeof window !== 'undefined' ? window.location.href : '';
