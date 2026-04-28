@@ -34,6 +34,14 @@ const RARITY_STARS: Record<string, number> = {
   Mythic: 5,
 };
 
+const RARITY_GLOW_BURST: Record<string, string> = {
+  Common:       'rgba(255,255,255,0.8)',
+  Rare:         'rgba(255,255,255,0.8)',
+  'Super Rare': 'rgba(255,255,255,0.8)',
+  Legendary:    'rgba(245,158,11,0.6)',
+  Mythic:       'rgba(255,107,157,0.7)',
+};
+
 type RevealPhase = 'silhouette' | 'rarityFlash' | 'blobReveal' | 'nameReveal' | 'traitsReveal' | 'done';
 
 export default function ResultCard({ result, onRetry }: ResultCardProps) {
@@ -96,17 +104,32 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
         >
           {/* Rarity badge */}
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.3, type: 'spring', stiffness: 260 }}
+            className="relative flex items-center justify-center"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={revealPhase !== 'silhouette'
+              ? { scale: 1, opacity: 1 }
+              : { scale: 0, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 12 }}
           >
+            {/* Glow burst */}
+            <motion.div
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                width: 80,
+                height: 80,
+                background: RARITY_GLOW_BURST[result.rarity],
+              }}
+              animate={revealPhase === 'rarityFlash'
+                ? { opacity: [0, 0.9, 0], scale: [0.5, 1.5, 2] }
+                : { opacity: 0, scale: 0.5 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+            />
             <span
-              className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-display font-bold border-2 tracking-wider ${RARITY_BADGE_BG[result.rarity]}`}
+              className={`relative z-10 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-display font-bold border-2 tracking-wider ${RARITY_BADGE_BG[result.rarity]}`}
               style={
                 isMythic
                   ? {
-                      background:
-                        'linear-gradient(90deg, #FF6B9D, #FFB347, #7C3AED)',
+                      background: 'linear-gradient(90deg, #FF6B9D, #FFB347, #7C3AED)',
                       backgroundSize: '200%',
                       animation: 'rainbow 2s linear infinite',
                     }
