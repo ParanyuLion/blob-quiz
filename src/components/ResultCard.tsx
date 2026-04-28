@@ -120,28 +120,41 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
           {/* Blob visual */}
           <motion.div
             animate={{
-              borderRadius: [
-                '60% 40% 30% 70% / 60% 30% 70% 40%',
-                '40% 60% 70% 30% / 40% 50% 60% 50%',
-                '30% 60% 40% 70% / 50% 60% 30% 60%',
-                '60% 40% 30% 70% / 60% 30% 70% 40%',
-              ],
-              y: [0, -8, 0],
+              filter: revealPhase === 'silhouette'
+                ? 'brightness(0) saturate(0)'
+                : 'brightness(1) saturate(1)',
             }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-            className="relative w-28 h-28 shadow-xl"
-            style={{
-              background: `linear-gradient(135deg, ${result.gradientFrom}, ${result.gradientTo})`,
-            }}
+            transition={{ filter: { duration: 0.6, ease: 'easeOut' } }}
           >
-            <BlobFace personality={result.id} />
-            <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-2xl select-none z-10">
-              {result.emoji}
-            </span>
+            <motion.div
+              animate={{
+                borderRadius: [
+                  '60% 40% 30% 70% / 60% 30% 70% 40%',
+                  '40% 60% 70% 30% / 40% 50% 60% 50%',
+                  '30% 60% 40% 70% / 50% 60% 30% 60%',
+                  '60% 40% 30% 70% / 60% 30% 70% 40%',
+                ],
+                y: [0, -8, 0],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+              className="relative w-28 h-28 shadow-xl"
+              style={{
+                background: `linear-gradient(135deg, ${result.gradientFrom}, ${result.gradientTo})`,
+              }}
+            >
+              {['blobReveal', 'nameReveal', 'traitsReveal', 'done'].includes(revealPhase) && (
+                <>
+                  <BlobFace personality={result.id} />
+                  <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-2xl select-none z-10">
+                    {result.emoji}
+                  </span>
+                </>
+              )}
+            </motion.div>
           </motion.div>
 
           {/* Legendary+ sparkles */}
