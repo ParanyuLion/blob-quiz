@@ -100,7 +100,7 @@ export default function HomePage() {
               style={{ background: 'linear-gradient(135deg, #FFB3C6 0%, #C7B8EA 100%)' }}
             >
               <BlobFace personality="generic" />
-              <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-4xl select-none z-10">🫧</span>
+              {/* <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-4xl select-none z-10">🫧</span> */}
             </motion.div>
 
             {/* Title */}
