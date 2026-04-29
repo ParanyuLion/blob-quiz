@@ -248,9 +248,14 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
 
           {/* Traits */}
           <div>
-            <p className="font-display text-sm text-gray-500 mb-3 text-center tracking-wider uppercase">
+            <motion.p
+              className="font-display text-sm text-gray-500 mb-3 text-center tracking-wider uppercase"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: ['traitsReveal', 'done'].includes(revealPhase) ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+            >
               ลักษณะประจำก้อน
-            </p>
+            </motion.p>
             <div className="flex flex-wrap gap-2 justify-center">
               {result.traits.map((trait, i) => (
                 <motion.span
