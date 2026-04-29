@@ -56,10 +56,19 @@ export default function HomePage() {
   const [phase, setPhase] = useState<Phase>("landing");
   const [currentQ, setCurrentQ] = useState(0);
   const [scores, setScores] = useState<ScoreMap>(initScores());
+  const [history, setHistory] = useState<{ q: number; scores: ScoreMap }[]>([]);
+
+  const handleStart = useCallback(() => {
+    setCurrentQ(0);
+    setScores(initScores());
+    setHistory([]);
+    setPhase("quiz");
+  }, []);
 
   const handleAnswer = useCallback(
     (partial: Partial<ScoreMap>) => {
       const next = addScores(scores, partial);
+      setHistory((h) => [...h, { q: currentQ, scores }]);
       setScores(next);
 
       if (currentQ + 1 >= questions.length) {
@@ -70,6 +79,17 @@ export default function HomePage() {
     },
     [scores, currentQ],
   );
+
+  const handleBack = useCallback(() => {
+    if (history.length === 0) {
+      setPhase("landing");
+      return;
+    }
+    const prev = history[history.length - 1];
+    setHistory((h) => h.slice(0, -1));
+    setCurrentQ(prev.q);
+    setScores(prev.scores);
+  }, [history]);
 
   const handleLoadingComplete = useCallback(() => {
     const result = calculateResult(scores);
@@ -206,7 +226,7 @@ export default function HomePage() {
               transition={{ delay: 0.55, type: "spring", stiffness: 200 }}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => setPhase("quiz")}
+              onClick={handleStart}
               className="w-full max-w-xs py-5 rounded-2xl font-display text-xl text-white transition-all"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,133,162,0.72) 0%, rgba(199,184,234,0.72) 100%)',
@@ -244,6 +264,7 @@ export default function HomePage() {
               questionIndex={currentQ}
               totalQuestions={questions.length}
               onAnswer={handleAnswer}
+              onBack={handleBack}
             />
           </motion.div>
         )}

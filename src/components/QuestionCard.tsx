@@ -12,16 +12,23 @@ interface QuestionCardProps {
   questionIndex: number;
   totalQuestions: number;
   onAnswer: (scores: Partial<Record<string, number>>) => void;
+  onBack: () => void;
 }
 
-const STORY_DURATION = 3000;
+const STORY_DURATION = 2600;
+const ANSWER_DELAY = 420;
 
 const SCENE_PALETTES = [
-  { from: "#FFB3C6", to: "#FDEEA3", icon: "🌅" },
-  { from: "#B5EAD7", to: "#C7F2E8", icon: "🌿" },
-  { from: "#C7B8EA", to: "#E8D5F5", icon: "✨" },
-  { from: "#FFD166", to: "#FFB3C6", icon: "🌸" },
-  { from: "#B5EAD7", to: "#FDEEA3", icon: "🍃" },
+  { from: "#FFB3C6", to: "#FDEEA3" },
+  { from: "#B5EAD7", to: "#C7F2E8" },
+  { from: "#C7B8EA", to: "#E8D5F5" },
+  { from: "#FFD166", to: "#FFB3C6" },
+  { from: "#B5EAD7", to: "#FDEEA3" },
+  { from: "#B3D9FF", to: "#C7B8EA" },
+  { from: "#FFB3C6", to: "#B5EAD7" },
+  { from: "#FDEEA3", to: "#B3D9FF" },
+  { from: "#C7B8EA", to: "#FDEEA3" },
+  { from: "#FFD166", to: "#B5EAD7" },
 ];
 
 const wordVariants = {
@@ -34,31 +41,34 @@ export default function QuestionCard({
   questionIndex,
   totalQuestions,
   onAnswer,
+  onBack,
 }: QuestionCardProps) {
   const [phase, setPhase] = useState<"story" | "question">("story");
-  const [showTap, setShowTap] = useState(false);
+  const [selected, setSelected] = useState<number | null>(null);
 
   const palette = SCENE_PALETTES[questionIndex % SCENE_PALETTES.length];
 
-  // Reset to story on each new question
   useEffect(() => {
     setPhase("story");
-    setShowTap(false);
+    setSelected(null);
 
-    const tapTimer = setTimeout(() => setShowTap(true), 1400);
     const autoTimer = setTimeout(() => setPhase("question"), STORY_DURATION);
-
-    return () => {
-      clearTimeout(tapTimer);
-      clearTimeout(autoTimer);
-    };
+    return () => clearTimeout(autoTimer);
   }, [question.id]);
 
   const handleStoryTap = useCallback(() => {
     if (phase === "story") setPhase("question");
   }, [phase]);
 
-  // Strip leading emoji/asterisk markers from introStory and split to words
+  const handleSelect = useCallback(
+    (option: Question["options"][number], i: number) => {
+      if (selected !== null) return;
+      setSelected(i);
+      setTimeout(() => onAnswer(option.scores), ANSWER_DELAY);
+    },
+    [selected, onAnswer],
+  );
+
   const storyWords = useMemo(() => {
     const clean = question.introStory
       .replace(/^\S+\s*\*?\s*/, "")
@@ -67,7 +77,6 @@ export default function QuestionCard({
     return clean.split(" ");
   }, [question.introStory]);
 
-  // Extract leading emoji from introStory
   const storyEmoji = useMemo(() => {
     const match = question.introStory.match(/^(\S+)/);
     return match ? match[1] : "🤩";
@@ -75,7 +84,6 @@ export default function QuestionCard({
 
   return (
     <div className="w-full max-w-lg mx-auto flex flex-col gap-4">
-      {/* Progress always visible */}
       <ProgressBar current={questionIndex + 1} total={totalQuestions} />
 
       <AnimatePresence mode="wait">
@@ -91,10 +99,9 @@ export default function QuestionCard({
             className="relative w-full rounded-3xl overflow-hidden cursor-pointer select-none"
             style={{
               background: `linear-gradient(145deg, ${palette.from}, ${palette.to})`,
-              minHeight: 260,
+              minHeight: 240,
             }}
           >
-            {/* Morphing blob background */}
             <motion.div
               className="absolute inset-0 opacity-20 pointer-events-none"
               animate={{
@@ -109,27 +116,20 @@ export default function QuestionCard({
             />
 
             <div className="relative z-10 flex flex-col items-center justify-center gap-5 px-6 py-10 text-center">
-              {/* Scene emoji */}
               <motion.span
                 initial={{ scale: 0, rotate: -20 }}
                 animate={{ scale: 1, rotate: 0 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 260,
-                  damping: 18,
-                  delay: 0.1,
-                }}
+                transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 }}
                 className="text-5xl drop-shadow-sm"
               >
                 {storyEmoji}
               </motion.span>
 
-              {/* Story text — word by word */}
               <motion.p
                 className="font-body text-base text-gray-700 italic leading-relaxed max-w-xs"
                 initial="hidden"
                 animate="visible"
-                transition={{ staggerChildren: 0.055, delayChildren: 0.3 }}
+                transition={{ staggerChildren: 0.05, delayChildren: 0.25 }}
               >
                 {storyWords.map((word, i) => (
                   <motion.span
@@ -143,27 +143,16 @@ export default function QuestionCard({
                 ))}
               </motion.p>
 
-              {/* Tap to continue hint */}
-              <AnimatePresence>
-                {showTap && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: [0.5, 1, 0.5] }}
-                    exit={{ opacity: 0 }}
-                    transition={{
-                      duration: 1.4,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="flex items-center gap-1.5 mt-1"
-                  >
-                    <span className="font-body text-xs text-gray-500">
-                      แตะเพื่อดำเนินต่อ
-                    </span>
-                    <span className="text-xs">👆</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Tap hint always visible */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+                className="flex items-center gap-1.5 mt-1"
+              >
+                <span className="text-xs">👆</span>
+                <span className="font-body text-xs text-gray-500">แตะเพื่อดำเนินต่อ</span>
+              </motion.div>
             </div>
 
             {/* Blob companion */}
@@ -177,17 +166,13 @@ export default function QuestionCard({
                     "60% 40% 30% 70% / 60% 30% 70% 40%",
                   ],
                 }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 style={{ background: "rgba(255,255,255,0.32)" }}
               />
               <BlobFace personality="generic" />
             </div>
 
-            {/* Countdown strip at bottom */}
+            {/* Countdown strip */}
             <motion.div
               className="absolute bottom-0 left-0 h-1 rounded-b-3xl"
               style={{ background: "rgba(255,255,255,0.6)" }}
@@ -208,50 +193,109 @@ export default function QuestionCard({
             transition={{ duration: 0.38, ease: [0.4, 0, 0.2, 1] }}
             className="flex flex-col gap-4"
           >
-            {/* Question card */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.05 }}
-              className="px-5 py-5 rounded-3xl shadow-lg"
-              style={{
-                background: 'rgba(255,255,255,0.75)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: '1.5px solid rgba(255,255,255,0.6)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9)',
-              }}
-            >
-              <h2 className="font-display text-xl text-gray-700 leading-snug mb-5">
-                {question.question}
-              </h2>
+            {/* Back button + question text */}
+            <div className="flex items-center gap-2 px-1">
+              <button
+                onClick={onBack}
+                className="flex-shrink-0 flex items-center justify-center text-pink-400 font-body text-base outline-none"
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 12,
+                  border: "1.5px solid rgba(255,182,210,0.5)",
+                  background: "rgba(255,255,255,0.65)",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                  cursor: "pointer",
+                }}
+              >
+                ←
+              </button>
+              <div
+                className="flex-1 px-4 py-3 rounded-2xl"
+                style={{
+                  background: `linear-gradient(135deg, ${palette.from}55, ${palette.to}55)`,
+                  backdropFilter: "blur(8px)",
+                  WebkitBackdropFilter: "blur(8px)",
+                  border: "1px solid rgba(255,255,255,0.6)",
+                }}
+              >
+                <h2 className="font-display text-base text-gray-700 leading-snug">
+                  {question.question}
+                </h2>
+              </div>
+            </div>
 
-              <div className="flex flex-col gap-3">
-                {question.options.map((option, i) => (
+            {/* Options */}
+            <div className="flex flex-col gap-3">
+              {question.options.map((option, i) => {
+                const [optEmoji, ...textParts] = option.text.split(" ");
+                const optText = textParts.join(" ");
+                const isSelected = selected === i;
+                const isOther = selected !== null && !isSelected;
+
+                return (
                   <motion.button
                     key={i}
                     initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + i * 0.07 }}
-                    whileHover={{ scale: 1.02, x: 4 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => onAnswer(option.scores)}
-                    className="group w-full text-left px-5 py-4 rounded-2xl transition-all duration-200 cursor-pointer"
+                    animate={{
+                      opacity: isOther ? 0.55 : 1,
+                      x: 0,
+                      scale: isSelected ? 1.015 : isOther ? 0.99 : 1,
+                    }}
+                    transition={{ duration: 0.2, delay: selected === null ? 0.1 + i * 0.07 : 0 }}
+                    whileHover={selected === null ? { scale: 1.02 } : {}}
+                    whileTap={selected === null ? { scale: 0.97 } : {}}
+                    onClick={() => handleSelect(option, i)}
+                    className="w-full text-left rounded-2xl outline-none"
                     style={{
-                      background: 'rgba(255,255,255,0.55)',
-                      backdropFilter: 'blur(10px)',
-                      WebkitBackdropFilter: 'blur(10px)',
-                      border: '1.5px solid rgba(255,182,210,0.4)',
-                      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), 0 2px 8px rgba(0,0,0,0.05)',
+                      padding: "14px 16px 14px 12px",
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: 12,
+                      border: `2px solid ${isSelected ? palette.from : "rgba(255,182,210,0.35)"}`,
+                      background: isSelected
+                        ? `linear-gradient(135deg, ${palette.from}99, ${palette.to}99)`
+                        : "rgba(255,255,255,0.6)",
+                      backdropFilter: "blur(10px)",
+                      WebkitBackdropFilter: "blur(10px)",
+                      boxShadow: isSelected
+                        ? `0 6px 20px ${palette.from}55, inset 0 1px 0 rgba(255,255,255,0.8)`
+                        : "0 2px 10px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.8)",
+                      cursor: selected !== null ? "default" : "pointer",
+                      transition: "background 0.2s, border 0.2s, box-shadow 0.2s",
+                      WebkitAppearance: "none",
                     }}
                   >
-                    <span className="font-body text-sm text-gray-600 group-hover:text-gray-800 leading-relaxed transition-colors">
-                      {option.text}
+                    {/* Emoji badge */}
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        flexShrink: 0,
+                        borderRadius: 10,
+                        marginTop: 1,
+                        background: isSelected
+                          ? "rgba(255,255,255,0.8)"
+                          : `linear-gradient(135deg, ${palette.from}55, ${palette.to}55)`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 18,
+                        transition: "background 0.2s, transform 0.2s",
+                        transform: isSelected ? "scale(1.1)" : "scale(1)",
+                      }}
+                    >
+                      {optEmoji}
+                    </div>
+                    <span className="font-body text-sm text-gray-600 leading-relaxed" style={{ fontWeight: 600 }}>
+                      {optText}
                     </span>
                   </motion.button>
-                ))}
-              </div>
-            </motion.div>
+                );
+              })}
+            </div>
 
             <AdBanner className="mt-1" />
           </motion.div>

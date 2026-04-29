@@ -205,7 +205,7 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
           )}
 
           <div className="text-center mt-1">
-            <h1 className="font-display text-2xl text-gray-800 leading-tight">
+            <h1 className="font-display font-extrabold text-2xl text-gray-800 leading-tight">
               {['nameReveal', 'traitsReveal', 'done'].includes(revealPhase)
                 ? result.name.split('').map((char, i) => (
                     <motion.span

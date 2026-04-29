@@ -34,11 +34,11 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
           clearInterval(msgTimer);
           return 100;
         }
-        return prev + 2;
+        return prev + 2.5;
       });
-    }, 100);
+    }, 80);
 
-    const doneTimer = setTimeout(onComplete, 5000);
+    const doneTimer = setTimeout(onComplete, 3200);
 
     return () => {
       clearInterval(msgTimer);
