@@ -136,7 +136,7 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
                   : undefined
               }
             >
-              {'★'.repeat(RARITY_STARS[result.rarity])}
+              {'★'.repeat(RARITY_STARS[result.rarity])} {result.rarity.toUpperCase()}
             </span>
           </motion.div>
 
@@ -265,7 +265,12 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
                     ? { opacity: 1, x: 0 }
                     : { opacity: 0, x: -8 }}
                   transition={{ duration: 0.25, ease: 'easeOut', delay: i * 0.08 }}
-                  className="px-3 py-1.5 rounded-full text-xs font-body font-semibold bg-pink-50 text-pink-500 border border-pink-100"
+                  className="px-3 py-1.5 rounded-full text-xs font-body font-semibold"
+                  style={{
+                    background: `linear-gradient(135deg, ${result.gradientFrom}33, ${result.gradientTo}33)`,
+                    color: result.badgeColor,
+                    border: `1.5px solid ${result.gradientFrom}55`,
+                  }}
                 >
                   {trait}
                 </motion.span>
