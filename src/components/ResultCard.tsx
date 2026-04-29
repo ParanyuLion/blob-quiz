@@ -290,7 +290,12 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
           </div>
 
           {/* Action buttons */}
-          <div className="flex flex-col gap-3 mt-2">
+          <motion.div
+            className="flex flex-col gap-3 mt-2"
+            initial={{ opacity: 0, y: 12 }}
+            animate={revealPhase === 'done' ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+          >
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
@@ -322,7 +327,7 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
             >
               ทดสอบใหม่อีกรอบ 🔁
             </motion.button>
-          </div>
+          </motion.div>
         </div>
       </div>
     </motion.div>
