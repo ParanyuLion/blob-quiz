@@ -237,9 +237,14 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
         {/* Body */}
         <div className="px-6 py-6 flex flex-col gap-5">
           {/* Description */}
-          <p className="font-body text-sm text-gray-600 leading-relaxed text-center">
+          <motion.p
+            className="font-body text-sm text-gray-600 leading-relaxed text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: ['traitsReveal', 'done'].includes(revealPhase) ? 1 : 0 }}
+            transition={{ duration: 0.4 }}
+          >
             {result.description}
-          </p>
+          </motion.p>
 
           {/* Traits */}
           <div>
@@ -247,13 +252,18 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
               ลักษณะประจำก้อน
             </p>
             <div className="flex flex-wrap gap-2 justify-center">
-              {result.traits.map((trait) => (
-                <span
+              {result.traits.map((trait, i) => (
+                <motion.span
                   key={trait}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={['traitsReveal', 'done'].includes(revealPhase)
+                    ? { opacity: 1, x: 0 }
+                    : { opacity: 0, x: -8 }}
+                  transition={{ duration: 0.25, ease: 'easeOut', delay: i * 0.08 }}
                   className="px-3 py-1.5 rounded-full text-xs font-body font-semibold bg-pink-50 text-pink-500 border border-pink-100"
                 >
                   {trait}
-                </span>
+                </motion.span>
               ))}
             </div>
           </div>
@@ -265,10 +275,12 @@ export default function ResultCard({ result, onRetry }: ResultCardProps) {
               return (
                 <motion.span
                   key={i}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.5 + i * 0.08 }}
-                  className={`text-2xl transition-all select-none ${filled ? 'opacity-100' : 'opacity-15'}`}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={['traitsReveal', 'done'].includes(revealPhase)
+                    ? { scale: 1, opacity: filled ? 1 : 0.15 }
+                    : { scale: 0, opacity: 0 }}
+                  transition={{ delay: i * 0.08, type: 'spring', stiffness: 260, damping: 18 }}
+                  className="text-2xl select-none"
                   style={{ color: filled ? result.badgeColor : '#D1D5DB' }}
                 >
                   ★
